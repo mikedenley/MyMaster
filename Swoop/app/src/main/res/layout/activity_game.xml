@@ -4,7 +4,15 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- 1) Four facedown “mystery” cards -->
+    <!-- 0) TOOLBAR at the very top -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <!-- 1) Four face‑down cards, sitting below the toolbar -->
     <GridView
         android:id="@+id/grid_face_down"
         android:layout_width="match_parent"
@@ -13,7 +21,8 @@
         android:columnWidth="80dp"
         android:horizontalSpacing="4dp"
         android:verticalSpacing="4dp"
-        android:layout_marginTop="72dp" />
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="8dp" />
 
     <!-- 2) Four face‑up cards -->
     <GridView
@@ -25,7 +34,8 @@
         android:horizontalSpacing="4dp"
         android:verticalSpacing="4dp"
         android:layout_below="@id/grid_face_down"
-        android:layout_marginTop="-50dp" />
+        android:layout_marginTop="8dp"
+        android:translationY="-50dp"/>
 
     <!-- 3) Player’s hand (11 or 12 cards) -->
     <GridView
@@ -39,7 +49,7 @@
         android:layout_below="@id/grid_face_up"
         android:layout_marginTop="16dp" />
 
-    <!-- 4) Top of the discard pile -->
+    <!-- 4) Discard pile top indicator -->
     <TextView
         android:id="@+id/tv_pile_top"
         android:layout_width="wrap_content"
@@ -51,7 +61,7 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <!-- 5) Play / Pick‑up button -->
+    <!-- 5) Play button -->
     <Button
         android:id="@+id/btn_play"
         android:layout_width="wrap_content"

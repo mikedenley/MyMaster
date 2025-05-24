@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.swoop.data.*
 import com.example.swoop.ui.adapters.CardAdapter
 import com.example.swoop.ui.utils.PreferencesHelper
@@ -16,6 +17,7 @@ import com.example.swoop.ui.utils.TooltipHelper
 
 class GameActivity : AppCompatActivity() {
 
+    private lateinit var toolbar: Toolbar
     private lateinit var gvFaceDown: GridView
     private lateinit var gvFaceUp:   GridView
     private lateinit var gridView:   GridView
@@ -39,38 +41,47 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        // Bind the three grids and controls
+        // 0) Toolbar setup
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        // 1) Bind views
         gvFaceDown = findViewById(R.id.grid_face_down)
         gvFaceUp   = findViewById(R.id.grid_face_up)
         gridView   = findViewById(R.id.grid_cards)
         tvPileTop  = findViewById(R.id.tv_pile_top)
         btnPlay    = findViewById(R.id.btn_play)
 
-        // Deal & render initial state
+        // 2) Deal & render
         setupGame()
+        // 2a) Now that we know decks/players/handSize, update title:
+        supportActionBar?.title = getString(
+            R.string.game_title,
+            PreferencesHelper.getNumDecks(this),
+            PreferencesHelper.getNumPlayers(this),
+            PreferencesHelper.getNumCards(this)
+        )
         renderFacePiles()
         renderPlayerHand()
         updatePileUI()
 
-        // Tooltips
+        // 3) Tooltips & listeners
         tvPileTop.setOnLongClickListener {
             TooltipHelper.show(it, getString(R.string.tooltip_pile_top))
             true
         }
-        gridView.onItemLongClickListener =
-            AdapterView.OnItemLongClickListener { _, view, pos, _ ->
-                val card = (gridView.adapter as CardAdapter).getItem(pos)
-                TooltipHelper.show(
-                    view,
-                    "${card.rank.value} of ${card.suit.name.lowercase().replaceFirstChar { it.titlecase() }}"
-                )
-                true
-            }
+        gridView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, v, pos, _ ->
+            val card = (gridView.adapter as CardAdapter).getItem(pos)
+            TooltipHelper.show(
+                v,
+                "${card.rank.value} of ${card.suit.name.lowercase().replaceFirstChar { it.titlecase() }}"
+            )
+            true
+        }
         btnPlay.setOnLongClickListener {
             TooltipHelper.show(it, getString(R.string.tooltip_play_button))
             true
         }
-
         btnPlay.setOnClickListener { onPlayClicked() }
     }
 
@@ -101,7 +112,6 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun renderFacePiles() {
-        // 4 facedown as backs
         gvFaceDown.adapter = object : BaseAdapter() {
             override fun getCount()    = players[currentPlayerIndex].faceDown.size
             override fun getItem(pos: Int) = players[currentPlayerIndex].faceDown[pos]
@@ -116,7 +126,6 @@ class GameActivity : AppCompatActivity() {
                 return v
             }
         }
-        // 4 face‑up with real cards
         gvFaceUp.adapter = CardAdapter(
             this,
             players[currentPlayerIndex].faceUp
@@ -138,11 +147,10 @@ class GameActivity : AppCompatActivity() {
     private fun onPlayClicked() {
         try {
             val player = players[currentPlayerIndex]
-            val move = if (player is AIPlayer) {
+            val move = if (player is AIPlayer)
                 player.chooseMove(pile.lastOrNull()?.rank)
-            } else {
+            else
                 (gridView.adapter as CardAdapter).getSelectedCards()
-            }
 
             if (move.isEmpty() && player !is AIPlayer) {
                 player.hand.addAll(pile)
@@ -156,11 +164,9 @@ class GameActivity : AppCompatActivity() {
                     return
                 }
             }
-
             renderFacePiles()
             renderPlayerHand()
             updatePileUI()
-
         } catch (e: IllegalMoveException) {
             TooltipHelper.show(this, e.message ?: getString(R.string.error_invalid_move))
         } catch (t: Throwable) {

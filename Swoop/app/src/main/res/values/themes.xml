@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Swoop" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Swoop" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/card_border</item>
         <item name="colorPrimaryVariant">@color/card_border</item>
         <item name="colorOnPrimary">@android:color/white</item>

@@ -7,28 +7,25 @@ import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.swoop.ui.utils.PreferencesHelper
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Inflate your main layout which contains a Toolbar with id "toolbar"
-        // and a Button with id "btn_start"
         setContentView(R.layout.activity_main)
 
-        // Wire up the toolbar
+        // 1) Find and set your Toolbar so the overflow menu appears
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
-
-        // Start Game button
-        val btnStart: Button = findViewById(R.id.btn_start)
-        btnStart.setOnClickListener {
+        // 2) Start Game button
+        findViewById<Button>(R.id.btn_start).setOnClickListener {
             startActivity(Intent(this, GameActivity::class.java))
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate your menu; this adds the Settings item to the app bar
+        // Inflate your menu; adds the Settings item to the bar
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }

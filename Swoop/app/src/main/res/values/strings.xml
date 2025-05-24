@@ -9,11 +9,18 @@
     <!-- Main Menu -->
     <string name="start_game">Start Game</string>
     <string name="settings">Settings</string>
+    <string name="game_title">Swoop — D: %1$d  P: %2$d  C: %3$d</string>
 
     <!-- Game UI -->
     <string name="play">Play</string>
     <string name="pile_empty">--</string>
-    <string name="game_title">Swoop — Decks: %1$d  Players: %2$d  Hand: %3$d</string>
+    <string name="num_players">Number of Players</string>
+    <string name="deck_count">Number of Decks</string>
+    <string name="hand_size">Cards per Player</string>
+    <string name="swoop_card_points">Swoop Card Points</string>
+    <string name="ai_difficulty">AI Difficulty</string>
+    <string name="allow_landscape">Allow Landscape</string>
+    <string name="developer_mode">Developer Mode</string>
 
     <!-- Score Breakdown -->
     <string name="round_summary">Round Summary</string>

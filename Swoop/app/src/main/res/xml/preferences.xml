@@ -1,11 +1,58 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ListPreference app:key="pref_num_players" app:title="Number of Players" app:entries="@array/num_players_entries" app:entryValues="@array/num_players_values" app:defaultValue="2" />
-    <ListPreference app:key="pref_deck_count" app:title="Number of Decks" app:entries="@array/deck_count_entries" app:entryValues="@array/deck_count_values" app:defaultValue="3" />
-    <ListPreference app:key="pref_hand_size" app:title="Cards per Player" app:entries="@array/hand_size_entries" app:entryValues="@array/hand_size_values" app:defaultValue="19" />
-    <ListPreference app:key="pref_swoop_value" app:title="Swoop Card Points" app:entries="@array/swoop_value_entries" app:entryValues="@array/swoop_value_values" app:defaultValue="50" />
-    <ListPreference app:key="pref_ai_difficulty" app:title="AI Difficulty" app:entries="@array/ai_diff_entries" app:entryValues="@array/ai_diff_values" app:defaultValue="NEWBIE" />
-    <SwitchPreferenceCompat app:key="pref_allow_landscape" app:title="Allow Landscape" app:defaultValue="true" />
-    <SwitchPreferenceCompat app:key="pref_dev_mode" app:title="Developer Mode" app:defaultValue="false" />
+
+    <ListPreference
+        android:key="pref_num_players"
+        android:title="@string/num_players"
+        android:entries="@array/num_players_entries"
+        android:entryValues="@array/num_players_values"
+        android:defaultValue="2"
+        android:summary="%s" />
+
+    <ListPreference
+        android:key="pref_deck_count"
+        android:title="@string/deck_count"
+        android:entries="@array/deck_count_entries"
+        android:entryValues="@array/deck_count_values"
+        android:defaultValue="3"
+        android:summary="%s" />
+
+    <ListPreference
+        android:key="pref_hand_size"
+        android:title="@string/hand_size"
+        android:entries="@array/hand_size_entries"
+        android:entryValues="@array/hand_size_values"
+        android:defaultValue="19"
+        android:summary="%s" />
+
+    <ListPreference
+        android:key="pref_swoop_value"
+        android:title="@string/swoop_card_points"
+        android:entries="@array/swoop_value_entries"
+        android:entryValues="@array/swoop_value_values"
+        android:defaultValue="50"
+        android:summary="%s" />
+
+    <ListPreference
+        android:key="pref_ai_difficulty"
+        android:title="@string/ai_difficulty"
+        android:entries="@array/ai_diff_entries"
+        android:entryValues="@array/ai_diff_values"
+        android:defaultValue="NEWBIE"
+        android:summary="%s" />
+
+    <SwitchPreferenceCompat
+        android:key="pref_allow_landscape"
+        android:title="@string/allow_landscape"
+        app:useSimpleSummaryProvider="true"
+        android:defaultValue="true" />
+
+    <SwitchPreferenceCompat
+        android:key="pref_dev_mode"
+        android:title="@string/developer_mode"
+        app:useSimpleSummaryProvider="true"
+        android:defaultValue="false" />
+
 </PreferenceScreen>
