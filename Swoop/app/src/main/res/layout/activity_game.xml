@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- 1) Four facedown “mystery” cards -->
+    <GridView
+        android:id="@+id/grid_face_down"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4"
+        android:columnWidth="80dp"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
+        android:layout_marginTop="72dp" />
+
+    <!-- 2) Four face‑up cards -->
+    <GridView
+        android:id="@+id/grid_face_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4"
+        android:columnWidth="80dp"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
+        android:layout_below="@id/grid_face_down"
+        android:layout_marginTop="-50dp" />
+
+    <!-- 3) Player’s hand (11 or 12 cards) -->
+    <GridView
+        android:id="@+id/grid_cards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4"
+        android:columnWidth="80dp"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
+        android:layout_below="@id/grid_face_up"
+        android:layout_marginTop="16dp" />
+
+    <!-- 4) Top of the discard pile -->
+    <TextView
+        android:id="@+id/tv_pile_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/grid_cards"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/pile_empty"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- 5) Play / Pick‑up button -->
+    <Button
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_pile_top"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/play" />
+
+</RelativeLayout>

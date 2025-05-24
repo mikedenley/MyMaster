@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Number of Players -->
+    <string-array name="num_players_entries">
+        <item>2 Players</item>
+        <item>3 Players</item>
+        <item>4 Players</item>
+        <item>5 Players</item>
+        <item>6 Players</item>
+        <item>7 Players</item>
+        <item>8 Players</item>
+    </string-array>
+    <string-array name="num_players_values">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <!-- Deck Count -->
+    <string-array name="deck_count_entries">
+        <item>3 Decks</item>
+        <item>4 Decks</item>
+        <item>5 Decks</item>
+        <item>6 Decks</item>
+        <item>7 Decks</item>
+    </string-array>
+    <string-array name="deck_count_values">
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+
+    <!-- Hand Size -->
+    <string-array name="hand_size_entries">
+        <item>19 Cards</item>
+        <item>20 Cards</item>
+    </string-array>
+    <string-array name="hand_size_values">
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+
+    <!-- Swoop Card Value -->
+    <string-array name="swoop_value_entries">
+        <item>25 Points</item>
+        <item>50 Points</item>
+    </string-array>
+    <string-array name="swoop_value_values">
+        <item>25</item>
+        <item>50</item>
+    </string-array>
+
+    <!-- AI Difficulty Levels -->
+    <string-array name="ai_diff_entries">
+        <item>Newbie</item>
+        <item>Casual</item>
+        <item>Pro</item>
+        <item>Shark</item>
+    </string-array>
+    <string-array name="ai_diff_values">
+        <item>NEWBIE</item>
+        <item>CASUAL</item>
+        <item>PRO</item>
+        <item>SHARK</item>
+    </string-array>
+</resources>
