@@ -49,7 +49,6 @@
         android:layout_below="@id/grid_face_down"
         android:layout_marginTop="-50dp"
         android:translationY="0dp" />
-
     <!-- 4) Hand (11 or 12 cards) -->
     <GridView
         android:id="@+id/grid_cards"
