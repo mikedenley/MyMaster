@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app   ="http://schemas.android.com/apk/res-auto">
 
+    <!-- 1) Show current score -->
     <item
         android:id="@+id/action_show_scores"
         android:icon="@android:drawable/ic_menu_info_details"
@@ -9,10 +10,18 @@
         app:showAsAction="never"
         android:orderInCategory="100" />
 
+    <!-- 2) Help -->
+    <item
+        android:id="@+id/action_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/action_help"
+        app:showAsAction="never"
+        android:orderInCategory="101" />
+
+    <!-- 3) Settings -->
     <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings"
-        app:showAsAction="never" />
-
+        app:showAsAction="never"/>
 </menu>

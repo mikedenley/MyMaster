@@ -5,6 +5,11 @@
         android:title="@string/settings"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/action_help"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_show_score"
         android:title="@string/menu_current_score"
         app:showAsAction="never"

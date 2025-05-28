@@ -4,6 +4,7 @@
         <item name="colorPrimary">@color/card_border</item>
         <item name="colorPrimaryVariant">@color/card_border</item>
         <item name="colorOnPrimary">@android:color/white</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 </resources>

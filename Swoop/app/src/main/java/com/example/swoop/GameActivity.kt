@@ -98,33 +98,27 @@ class GameActivity : AppCompatActivity() {
 
     // -- Menu: Show current scores during play --
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        Log.d("GameActivity","onCreateOptionsMenu")
         menuInflater.inflate(R.menu.menu_game, menu)
         menu.findItem(R.id.action_show_scores)?.title = "Current Score"
         return true
     }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_show_scores -> {
-                showScores()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_show_scores -> {
+            showScores()
+            true
         }
+        R.id.action_help -> {
+            showHelpDialog()
+            true
+        }
+        R.id.action_settings -> {
+            // existing settings logic
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
-//    private fun showCurrentScoresDialog() {
-//        // 1) Build a simple multi-line message of "Name: score"
-//        val sb = StringBuilder()
-//        ScoreManager.getAllPlayersTotalScores().forEach { (player, total) ->
-//            sb.append("${player.name}: $total\n")
-//        }
-//
-//        // 2) Show it in a standard Material dialog
-//        MaterialAlertDialogBuilder(this)
-//            .setTitle(R.string.action_show_scores)
-//            .setMessage(sb.toString().trimEnd())
-//            .setPositiveButton(android.R.string.ok, null)
-//            .show()
-//    }
+
     /** Pops up a dialog showing each player’s cumulative total */
     private fun showScores() {
         val msg = ScoreManager
@@ -138,17 +132,6 @@ class GameActivity : AppCompatActivity() {
             .setPositiveButton(android.R.string.ok, null)
             .show()
     }
-//    private fun showScores() {
-//        val totals = ScoreManager.getAllPlayersTotalScores()
-//        val msg = totals.entries.joinToString("\n") { (p, pts) ->
-//            "${p.name}: $pts"
-//        }
-//        AlertDialog.Builder(this)
-//            .setTitle(R.string.show_scores)
-//            .setMessage(msg)
-//            .setPositiveButton(android.R.string.ok, null)
-//            .show()
-//    }
 
     private fun setupGame() {
         // build players list
@@ -288,6 +271,7 @@ class GameActivity : AppCompatActivity() {
     }
     //  -- add this if you want to update the title each time the menu opens
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        Log.d("GameActivity","onPrepareOptionsMenu")
         super.onPrepareOptionsMenu(menu)
         // e.g. show your own running score from ScoreManager
         val myScore = ScoreManager
@@ -380,5 +364,12 @@ class GameActivity : AppCompatActivity() {
             startActivity(intent)
         }
         finish()
+    }
+    private fun showHelpDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("How to Play")
+            .setMessage("On each turn, select cards in your hand that match or beat the pile's top card. Tap PLAY to make your move. Tap ⋮ → Current Score to see your running total.")
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
     }
 }
