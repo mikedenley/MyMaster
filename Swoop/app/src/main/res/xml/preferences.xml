@@ -43,6 +43,15 @@
         android:defaultValue="NEWBIE"
         android:summary="%s" />
 
+    <!-- NEW: Game ending total -->
+    <ListPreference
+        app:key="pref_end_total"
+        app:title="@string/game_end_total"
+        app:entries="@array/end_total_entries"
+        app:entryValues="@array/end_total_values"
+        app:defaultValue="500"
+        app:summary="%s" />
+
     <SwitchPreferenceCompat
         android:key="pref_allow_landscape"
         android:title="@string/allow_landscape"
@@ -54,5 +63,22 @@
         android:title="@string/developer_mode"
         app:useSimpleSummaryProvider="true"
         android:defaultValue="false" />
+
+    <PreferenceCategory
+        app:key="pref_help_category"
+        app:title="Help &amp; Info">
+
+        <Preference
+            app:key="pref_instructions"
+            app:title="Instructions"
+            app:summary="How to play Swoop" />
+
+        <Preference
+            app:key="pref_game_rules"
+            app:title="Game Rules"
+            app:summary="Detailed rules of the game" />
+
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

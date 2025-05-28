@@ -69,4 +69,12 @@
         <item>PRO</item>
         <item>SHARK</item>
     </string-array>
+    <string-array name="end_total_entries">
+        <item>300 Points</item>
+        <item>500 Points</item>
+    </string-array>
+    <string-array name="end_total_values">
+        <item>300</item>
+        <item>500</item>
+    </string-array>
 </resources>

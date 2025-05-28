@@ -1,11 +1,13 @@
+// File: app/src/main/java/com/example/swoop/GameActivity.kt
 package com.example.swoop
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -14,20 +16,36 @@ import com.example.swoop.data.*
 import com.example.swoop.ui.adapters.CardAdapter
 import com.example.swoop.ui.utils.PreferencesHelper
 import com.example.swoop.ui.utils.TooltipHelper
+import android.view.Menu
+import android.view.MenuItem
+import com.example.swoop.data.ScoreManager
+import com.example.swoop.ui.utils.toResourceId
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class GameActivity : AppCompatActivity() {
+    companion object {
+        private const val TAG = "GameActivity"
+        private const val DRAW_DELAY_MS = 2500L
+    }
 
+    // UI
     private lateinit var toolbar: Toolbar
+    private lateinit var gvStarterDraw: GridView
     private lateinit var gvFaceDown: GridView
-    private lateinit var gvFaceUp:   GridView
-    private lateinit var gridView:   GridView
-    private lateinit var tvPileTop:  TextView
-    private lateinit var btnPlay:    Button
+    private lateinit var gvFaceUp: GridView
+    private lateinit var gvHand: GridView
+    private lateinit var tvPileTop: TextView
+    private lateinit var btnPlay: Button
 
+    // Game state
     private lateinit var deck: Deck
     private val players = mutableListOf<Player>()
-    private val pile    = mutableListOf<Card>()
+    private val pile = mutableListOf<Card>()
     private var currentPlayerIndex = 0
+
+    // Starter‐draw tie handling
+    private var drawContestants: List<Player> = emptyList()
+    private val lastDraws = mutableMapOf<Player, Card>()
 
     override fun onResume() {
         super.onResume()
@@ -41,55 +59,99 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        // 0) Toolbar setup
+        // 0) Toolbar
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         // 1) Bind views
-        gvFaceDown = findViewById(R.id.grid_face_down)
-        gvFaceUp   = findViewById(R.id.grid_face_up)
-        gridView   = findViewById(R.id.grid_cards)
-        tvPileTop  = findViewById(R.id.tv_pile_top)
-        btnPlay    = findViewById(R.id.btn_play)
+        gvStarterDraw = findViewById(R.id.grid_starter_draw)
+        gvFaceDown    = findViewById(R.id.grid_face_down)
+        gvFaceUp      = findViewById(R.id.grid_face_up)
+        gvHand        = findViewById(R.id.grid_cards)
+        tvPileTop     = findViewById(R.id.tv_pile_top)
+        btnPlay       = findViewById(R.id.btn_play)
 
-        // 2) Deal & render
+        // 2) Deal & initialize
         setupGame()
-        // 2a) Now that we know decks/players/handSize, update title:
         supportActionBar?.title = getString(
             R.string.game_title,
             PreferencesHelper.getNumDecks(this),
             PreferencesHelper.getNumPlayers(this),
             PreferencesHelper.getNumCards(this)
         )
-        renderFacePiles()
-        renderPlayerHand()
-        updatePileUI()
 
-        // 3) Tooltips & listeners
-        tvPileTop.setOnLongClickListener {
-            TooltipHelper.show(it, getString(R.string.tooltip_pile_top))
-            true
+        // 3) Hide main‐game UI
+        listOf(gvFaceDown, gvFaceUp, gvHand, tvPileTop, btnPlay).forEach {
+            it.visibility = View.GONE
         }
-        gridView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, v, pos, _ ->
-            val card = (gridView.adapter as CardAdapter).getItem(pos)
-            TooltipHelper.show(
-                v,
-                "${card.rank.value} of ${card.suit.name.lowercase().replaceFirstChar { it.titlecase() }}"
-            )
-            true
-        }
+
+        // 4) Begin starter‐draw phase
+        renderStarterDraw()
+
+        // 5) Play button only after draw
+        btnPlay.setOnClickListener { onPlayClicked() }
         btnPlay.setOnLongClickListener {
             TooltipHelper.show(it, getString(R.string.tooltip_play_button))
             true
         }
-        btnPlay.setOnClickListener { onPlayClicked() }
     }
 
-    private fun setupGame() {
-        val numDecks = PreferencesHelper.getNumDecks(this)
-        deck = Deck(numDecks).apply { shuffle() }
-        ScoreManager.initRound(PreferencesHelper.getSwoopValue(this))
+    // -- Menu: Show current scores during play --
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_game, menu)
+        menu.findItem(R.id.action_show_scores)?.title = "Current Score"
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_show_scores -> {
+                showScores()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+//    private fun showCurrentScoresDialog() {
+//        // 1) Build a simple multi-line message of "Name: score"
+//        val sb = StringBuilder()
+//        ScoreManager.getAllPlayersTotalScores().forEach { (player, total) ->
+//            sb.append("${player.name}: $total\n")
+//        }
+//
+//        // 2) Show it in a standard Material dialog
+//        MaterialAlertDialogBuilder(this)
+//            .setTitle(R.string.action_show_scores)
+//            .setMessage(sb.toString().trimEnd())
+//            .setPositiveButton(android.R.string.ok, null)
+//            .show()
+//    }
+    /** Pops up a dialog showing each player’s cumulative total */
+    private fun showScores() {
+        val msg = ScoreManager
+            .getAllPlayersTotalScores()
+            .entries
+            .joinToString("\n") { (p, pts) -> "${p.name}: $pts" }
 
+        AlertDialog.Builder(this)
+            .setTitle(R.string.action_show_scores)
+            .setMessage(msg)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+//    private fun showScores() {
+//        val totals = ScoreManager.getAllPlayersTotalScores()
+//        val msg = totals.entries.joinToString("\n") { (p, pts) ->
+//            "${p.name}: $pts"
+//        }
+//        AlertDialog.Builder(this)
+//            .setTitle(R.string.show_scores)
+//            .setMessage(msg)
+//            .setPositiveButton(android.R.string.ok, null)
+//            .show()
+//    }
+
+    private fun setupGame() {
+        // build players list
         players.clear()
         players.add(Player(getString(R.string.player_you)))
         repeat(PreferencesHelper.getNumPlayers(this) - 1) { i ->
@@ -100,15 +162,101 @@ class GameActivity : AppCompatActivity() {
                 )
             )
         }
+        // init scoring
+        ScoreManager.initPlayers(players)
+        ScoreManager.initRound(PreferencesHelper.getSwoopValue(this))
+        // build & shuffle deck
+        deck = Deck(PreferencesHelper.getNumDecks(this)).apply { shuffle() }
 
+        // deal each player's cards
         val handSize = PreferencesHelper.getNumCards(this)
-        players.forEach { p ->
+        for (p in players) {
             val cards = List(handSize) { deck.draw()!! }.shuffled()
             p.faceDown.addAll(cards.take(4))
-            p.faceUp.addAll(cards.drop(4).take(4))
-            p.hand.addAll(cards.drop(8).sortedBy { it.rank.value })
+            p.faceUp  .addAll(cards.drop(4).take(4))
+            p.hand    .addAll(cards.drop(8).sortedBy { it.rank.value })
         }
         currentPlayerIndex = 0
+        drawContestants = emptyList()
+        lastDraws.clear()
+    }
+
+    private fun renderStarterDraw() {
+        if (drawContestants.isEmpty()) {
+            drawContestants = players.toList()
+        }
+        lastDraws.clear()
+
+        gvStarterDraw.adapter = object : BaseAdapter() {
+            override fun getCount()    = drawContestants.size
+            override fun getItem(pos: Int) = drawContestants[pos]
+            override fun getItemId(pos: Int) = pos.toLong()
+            override fun getView(pos: Int, cv: View?, parent: ViewGroup): View {
+                val v = cv ?: layoutInflater.inflate(
+                    R.layout.item_starter_draw, parent, false
+                )
+                val player = drawContestants[pos]
+                val card = deck.draw()!!
+                lastDraws[player] = card
+
+                val iv     = v.findViewById<ImageView>(R.id.iv_card)
+                val resId  = card.toResourceId(this@GameActivity)
+                iv.setImageResource(if (resId != 0) resId else R.drawable.card_back)
+
+                val tvRank = v.findViewById<TextView>(R.id.tv_rank)
+                if (resId != 0) {
+                    tvRank.visibility = View.GONE
+                } else {
+                    tvRank.text = when (card.rank) {
+                        Rank.ACE   -> "1"
+                        Rank.JACK  -> "J"
+                        Rank.QUEEN -> "Q"
+                        Rank.KING  -> "K"
+                        Rank.JOKER -> "JK"
+                        else       -> card.rank.value.toString()
+                    }
+                    tvRank.visibility = View.VISIBLE
+                }
+
+                v.findViewById<TextView>(R.id.tv_name).text = player.name
+                return v
+            }
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // tie‐breaker logic
+            val max = lastDraws.values.maxOf { it.rank.value }
+            val winners = lastDraws.filter { it.value.rank.value == max }.keys.toList()
+            if (winners.size > 1) {
+                val names = winners.joinToString(", ") { it.name }
+                Toast.makeText(this, "Tie between $names — redrawing…", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "Tie among: $names")
+                drawContestants = winners
+                renderStarterDraw()
+            } else {
+                // clear dimming
+                val dlg = AlertDialog.Builder(this)
+                    .setTitle(R.string.dialog_draw_title)
+                    .setMessage(R.string.dialog_draw_message)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.continue_button) { d, _ ->
+                        d.dismiss()
+                        showMainGameUI()
+                    }
+                    .create()
+                dlg.show()
+                dlg.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            }
+        }, DRAW_DELAY_MS)
+    }
+
+    private fun showMainGameUI() {
+        gvStarterDraw.visibility = View.GONE
+        listOf(gvFaceDown, gvFaceUp, gvHand, tvPileTop, btnPlay)
+            .forEach { it.visibility = View.VISIBLE }
+        renderFacePiles()
+        renderPlayerHand()
+        updatePileUI()
     }
 
     private fun renderFacePiles() {
@@ -117,40 +265,45 @@ class GameActivity : AppCompatActivity() {
             override fun getItem(pos: Int) = players[currentPlayerIndex].faceDown[pos]
             override fun getItemId(pos: Int) = pos.toLong()
             override fun getView(pos: Int, cv: View?, parent: ViewGroup): View {
-                val v = cv ?: LayoutInflater.from(this@GameActivity)
-                    .inflate(R.layout.item_card, parent, false)
-                v.findViewById<ImageView>(R.id.iv_card)
-                    .setImageResource(R.drawable.card_back)
-                v.findViewById<TextView>(R.id.tv_rank)
-                    .visibility = View.INVISIBLE
+                val v = cv ?: layoutInflater.inflate(R.layout.item_card, parent, false)
+                v.findViewById<ImageView>(R.id.iv_card).setImageResource(R.drawable.card_back)
+                v.findViewById<TextView>(R.id.tv_rank).visibility = View.INVISIBLE
                 return v
             }
         }
-        gvFaceUp.adapter = CardAdapter(
-            this,
-            players[currentPlayerIndex].faceUp
-        )
+        gvFaceUp.adapter = CardAdapter(this, players[currentPlayerIndex].faceUp)
     }
 
     private fun renderPlayerHand() {
-        gridView.adapter = CardAdapter(
-            this,
-            players[currentPlayerIndex].hand
-        )
+        gvHand.adapter = CardAdapter(this, players[currentPlayerIndex].hand)
     }
 
     private fun updatePileUI() {
-        tvPileTop.text =
-            pile.lastOrNull()?.rank?.value?.toString() ?: getString(R.string.pile_empty)
+        tvPileTop.text = pile.lastOrNull()?.rank?.value?.toString()
+            ?: getString(R.string.pile_empty)
+        tvPileTop.setOnLongClickListener {
+            TooltipHelper.show(it, getString(R.string.tooltip_pile_top))
+            true
+        }
     }
-
+    //  -- add this if you want to update the title each time the menu opens
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        // e.g. show your own running score from ScoreManager
+        val myScore = ScoreManager
+        .getAllPlayersTotalScores()[players[0]]
+        ?: 0
+        menu.findItem(R.id.action_show_scores)
+        ?.title = "Current Score: $myScore"
+        return true
+    }
     private fun onPlayClicked() {
         try {
             val player = players[currentPlayerIndex]
             val move = if (player is AIPlayer)
                 player.chooseMove(pile.lastOrNull()?.rank)
             else
-                (gridView.adapter as CardAdapter).getSelectedCards()
+                (gvHand.adapter as CardAdapter).getSelectedCards()
 
             if (move.isEmpty() && player !is AIPlayer) {
                 player.hand.addAll(pile)
@@ -167,13 +320,15 @@ class GameActivity : AppCompatActivity() {
             renderFacePiles()
             renderPlayerHand()
             updatePileUI()
+            // force Android to re‑run onPrepareOptionsMenu()
+            invalidateOptionsMenu()
         } catch (e: IllegalMoveException) {
             TooltipHelper.show(this, e.message ?: getString(R.string.error_invalid_move))
         } catch (t: Throwable) {
             if (PreferencesHelper.isDeveloperMode(this)) {
                 AlertDialog.Builder(this)
                     .setTitle(getString(R.string.error_dev_title))
-                    .setMessage(android.util.Log.getStackTraceString(t))
+                    .setMessage(Log.getStackTraceString(t))
                     .setPositiveButton(android.R.string.ok, null)
                     .show()
             } else {
@@ -213,11 +368,17 @@ class GameActivity : AppCompatActivity() {
 
     private fun endRound(winner: Player) {
         ScoreManager.addRoundScore(players.filter { it != winner })
-        startActivity(
-            Intent(this, ScoreBreakdownActivity::class.java).apply {
-                putExtra("winner", winner.name)
-            }
-        )
+
+        val endTotal = PreferencesHelper.getGameEndTotal(this)
+        val someoneOver = ScoreManager
+            .getAllPlayersTotalScores()
+            .values.any { it >= endTotal }
+
+        Intent(this, ScoreBreakdownActivity::class.java).also { intent ->
+            intent.putExtra("winner", winner.name)
+            if (someoneOver) intent.putExtra("final", true)
+            startActivity(intent)
+        }
         finish()
     }
 }

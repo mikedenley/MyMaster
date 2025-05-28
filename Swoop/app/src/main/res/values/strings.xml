@@ -11,6 +11,13 @@
     <string name="settings">Settings</string>
     <string name="game_title">Swoop — D: %1$d  P: %2$d  C: %3$d</string>
 
+    <!-- Dialog that shows before dealing the real hand -->
+    <string name="dialog_draw_title">Drawing to see who leads</string>
+    <string name="dialog_draw_message">
+        Each player draws one card from the deck – highest card starts. When you’re ready, tap Continue.
+    </string>
+    <string name="continue_button">Continue</string>
+
     <!-- Game UI -->
     <string name="play">Play</string>
     <string name="pile_empty">--</string>
@@ -41,7 +48,7 @@
 
     <!-- Player Labels -->
     <string name="player_you">You</string>
-    <string name="player_cpu">CPU</string> <!-- Base label; numbered in adapter -->
+    <string name="player_cpu">AI_Player_</string> <!-- Base label; numbered in adapter -->
 
     <!-- Placeholder Resources -->
     <string name="player_round_score">%1$s: %2$d pts</string>
@@ -51,4 +58,64 @@
     <!-- Content Description -->
     <string name="card_suit_desc">Suit</string>
     <string name="card_image_desc">Playing card</string>
+
+    <string name="finish">Finish</string>
+    <string name="game_end_total">Game ending point total</string>
+    <string name="show_scores">Show Scores</string>
+    <string name="action_show_scores">Show Scores</string>
+    <string name="menu_current_score">Current Score</string>
+    <!-- Game Instructions -->
+    <string
+        name="pref_instructions_text"
+        formatted="false"><![CDATA[
+<h2>How to Play Swoop</h2>
+<ul>
+  <li>On your turn, play one or more cards of the same rank,
+      at or below the top of the discard pile.</li>
+  <li>If you can’t (or won’t), pick up the entire pile.</li>
+  <li><b>Tens</b> and <b>Jokers</b> are “Swoop” cards: they clear the pile and let you go again.</li>
+  <li>You start with 4 face‑down, 4 face‑up, plus 11–12 in hand.</li>
+  <li>Face‑down cards only playable after their face‑up cover is gone.</li>
+  <li>First to empty their cards wins the round; lowest total score wins the game.</li>
+</ul>
+]]></string>
+
+    <!-- Game Rules (HTML, preserve spacing) -->
+    <string
+        name="pref_game_rules_text"
+        formatted="false"><![CDATA[
+<h2>Official Game Rules</h2>
+<ol>
+  <li><b>Object:</b> Discard all your cards each round; keep lowest score.</li>
+  <li><b>Scoring:</b>
+    <ul>
+      <li>Ace = 1 point</li>
+      <li>2–9 = face value</li>
+      <li>J/Q/K = 10 points each</li>
+      <li>Ten &amp; Joker = swoop value (25 or 50)</li>
+    </ul>
+  </li>
+  <li><b>Setup:</b> 3 decks for 2–4 players; +1 deck per extra 2 players.</li>
+  <li><b>Play:</b> See Instructions above.</li>
+  <li><b>Swoop Cards:</b> Tens &amp; Jokers instantly clear the pile.</li>
+  <li><b>Face‑down Cards:</b> Risky—flip to play, but higher means pickup.</li>
+  <li><b>End Round:</b> When someone goes out, score leftovers. First to limit (e.g. 500) loses.</li>
+</ol>
+
+<h2>Game Options</h2>
+<ol>
+  <li><b>Risk</b>
+    <ol type="a">
+      <li>You may immediately play the face‑down card after playing the face‑up card on the same pile.
+          If you played more than one face‑up card, each corresponding face‑down may be played in any order.</li>
+      <li>After playing the first face‑down card, you may also play any additional cards from your hand (including piles) of the same rank or numeric value.</li>
+      <li>You still retain the option to play further face‑down cards under their face‑up covers, keeping in mind the new pile top.</li>
+    </ol>
+  </li>
+  <li><b>Swoop card value</b> can be set to 25 or 50. Setting it to 50 increases the risk.</li>
+  <li><b>Game ending point total</b> can be set to 300 or 500. Choosing 300 shortens the game and gives less recovery time.</li>
+</ol>
+]]></string>
+    <string name="title_instructions">Instructions</string>
+    <string name="title_game_rules">Game Rules</string>
 </resources>

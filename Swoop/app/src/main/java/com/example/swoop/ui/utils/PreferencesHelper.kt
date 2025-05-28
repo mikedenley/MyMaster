@@ -13,4 +13,8 @@ object PreferencesHelper{
     fun getAIDifficulty(ctx:Context)=AIPlayer.Difficulty.valueOf(prefs(ctx).getString("pref_ai_difficulty","NEWBIE")!!)
     fun isLandscapeAllowed(ctx:Context)=prefs(ctx).getBoolean("pref_allow_landscape",true)
     fun isDeveloperMode(ctx:Context)=prefs(ctx).getBoolean("pref_dev_mode",false)
+    fun getGameEndTotal(context: Context): Int {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getString("pref_end_total", "500")?.toIntOrNull() ?: 500
+    }
 }

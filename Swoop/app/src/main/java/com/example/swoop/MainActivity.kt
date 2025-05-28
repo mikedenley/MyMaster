@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.Toast                     // ← Make sure this import is present
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
@@ -14,30 +15,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 1) Find and set your Toolbar so the overflow menu appears
+        // Wire up the toolbar so the overflow menu shows
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        // 2) Start Game button
+        // Start Game button with error‑guard
         findViewById<Button>(R.id.btn_start).setOnClickListener {
-            startActivity(Intent(this, GameActivity::class.java))
+            try {
+                startActivity(Intent(this, GameActivity::class.java))
+                finish()  // optional: close MainActivity so focus moves cleanly
+            } catch (ex: Exception) {
+                // Log and toast the error so you can see what's going wrong
+                android.util.Log.e("MainActivity", "Failed to launch GameActivity", ex)
+                Toast.makeText(
+                    this,
+                    "Error launching game: ${ex.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate your menu; adds the Settings item to the bar
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
             R.id.action_settings -> {
-                // Open your Settings screen
                 startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
 }

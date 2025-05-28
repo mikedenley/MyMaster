@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- 0) TOOLBAR at the very top -->
+    <!-- 0) TOOLBAR -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -12,56 +13,69 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 
-    <!-- 1) Four face‑down cards, sitting below the toolbar -->
+    <!-- 1) Starter‑draw row -->
+    <GridView
+        android:id="@+id/grid_starter_draw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="auto_fit"
+        android:columnWidth="80dp"
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="8dp"
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="12dp" />
+
+    <!-- 2) Four face‑down -->
     <GridView
         android:id="@+id/grid_face_down"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="4"
         android:columnWidth="80dp"
-        android:horizontalSpacing="4dp"
-        android:verticalSpacing="4dp"
-        android:layout_below="@id/toolbar"
-        android:layout_marginTop="8dp" />
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="8dp"
+        android:layout_below="@id/grid_starter_draw"
+        android:layout_marginTop="16dp" />
 
-    <!-- 2) Four face‑up cards -->
+    <!-- 3) Four face‑up -->
     <GridView
         android:id="@+id/grid_face_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="4"
         android:columnWidth="80dp"
-        android:horizontalSpacing="4dp"
-        android:verticalSpacing="4dp"
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="8dp"
         android:layout_below="@id/grid_face_down"
-        android:layout_marginTop="8dp"
-        android:translationY="-50dp"/>
+        android:layout_marginTop="-50dp"
+        android:translationY="0dp" />
+        //android:layout_marginTop="16dp"
 
-    <!-- 3) Player’s hand (11 or 12 cards) -->
+    <!-- 4) Hand (11 or 12 cards) -->
     <GridView
         android:id="@+id/grid_cards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="4"
         android:columnWidth="80dp"
-        android:horizontalSpacing="4dp"
-        android:verticalSpacing="4dp"
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="8dp"
         android:layout_below="@id/grid_face_up"
         android:layout_marginTop="16dp" />
 
-    <!-- 4) Discard pile top indicator -->
+    <!-- 5) Discard‑pile indicator -->
     <TextView
         android:id="@+id/tv_pile_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/grid_cards"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/pile_empty"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <!-- 5) Play button -->
+    <!-- 6) Play button -->
     <Button
         android:id="@+id/btn_play"
         android:layout_width="wrap_content"

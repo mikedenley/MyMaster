@@ -1,69 +1,34 @@
+// File: app/src/main/java/com/example/swoop/data/ScoreManager.kt
 package com.example.swoop.data
 
-/**
- * Manages scoring for the Swoop game.
- */
 object ScoreManager {
-    private val scores = mutableMapOf<Player, Int>()
-    private val lastHands = mutableMapOf<Player, List<Card>>()
-    private var swoopVal = 50
+    private var swoopValue: Int = 50
+    private val roundScores = mutableMapOf<Player, Int>()
+    private val totalScores = mutableMapOf<Player, Int>()
 
-    /**
-     * Call at the start of each round with the current wild-card point value.
-     */
-    fun initRound(value: Int) {
-        swoopVal = value
-        lastHands.clear()
+    /** Call once when the game (all rounds) starts to zero everyone. */
+    fun initPlayers(players: List<Player>) {
+        totalScores.clear()
+        players.forEach { totalScores[it] = 0 }
     }
 
-    /**
-     * Record a play — no-op for now.
-     * Suppress unused-parameter warnings.
-     */
+    fun initRound(swoopValue: Int) {
+        this.swoopValue = swoopValue
+        roundScores.clear()
+    }
+
+    fun recordPlay(player: Player, cards: List<Card>) { /* unchanged */ }
+
     @Suppress("UNUSED_PARAMETER")
-    fun recordPlay(player: Player, cards: List<Card>) {
-        // Intentionally no-op
-    }
+    fun recordSwoop(player: Player) { /* no‐op */ }
 
-    /**
-     * Record a swoop event — no-op for now.
-     * Suppress unused-parameter warnings.
-     */
-    @Suppress("UNUSED_PARAMETER")
-    fun recordSwoop(player: Player) {
-        // Intentionally no-op
-    }
-
-    /**
-     * After someone goes out, tally each remaining player's hand and update their total.
-     * @param losers List of players who did not win this round
-     */
     fun addRoundScore(losers: List<Player>) {
-        losers.forEach { player ->
-            val hand = player.hand.toList()
-            lastHands[player] = hand
-            val pts = hand.sumOf { card ->
-                if (card.rank.isSwoop) swoopVal else card.rank.value
-            }
-            scores[player] = (scores[player] ?: 0) + pts
+        losers.forEach { loser ->
+            val pts = roundScores.getOrDefault(loser, 0)
+            totalScores[loser] = totalScores.getOrDefault(loser, 0) + pts
         }
     }
 
-    /**
-     * Detailed breakdown for the last round's hand of a given player.
-     */
-    fun breakdown(player: Player): List<Pair<Card, Int>> =
-        lastHands[player]?.map { card ->
-            card to if (card.rank.isSwoop) swoopVal else card.rank.value
-        } ?: emptyList()
-
-    /**
-     * Total cumulative score for a player.
-     */
-    fun getTotal(player: Player): Int = scores[player] ?: 0
-
-    /**
-     * All players who have recorded scores so far.
-     */
-    fun getAllPlayers(): List<Player> = scores.keys.toList()
+    fun getRoundScores(): Map<Player, Int> = roundScores.toMap()
+    fun getAllPlayersTotalScores(): Map<Player, Int> = totalScores.toMap()
 }
