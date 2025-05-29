@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv_ai_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
+
+    <GridView
+        android:id="@+id/grid_ai_face_down"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:numColumns="auto_fit"
+        android:columnWidth="50dp"
+        android:verticalSpacing="4dp"
+        android:horizontalSpacing="4dp"/>
+
+    <GridView
+        android:id="@+id/grid_ai_face_up"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:numColumns="auto_fit"
+        android:columnWidth="50dp"
+        android:verticalSpacing="4dp"
+        android:horizontalSpacing="4dp"/>
+</LinearLayout>

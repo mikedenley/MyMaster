@@ -20,7 +20,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.example.swoop.data.ScoreManager
 import com.example.swoop.ui.utils.toResourceId
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+//import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class GameActivity : AppCompatActivity() {
     companion object {
@@ -36,6 +36,8 @@ class GameActivity : AppCompatActivity() {
     private lateinit var gvHand: GridView
     private lateinit var tvPileTop: TextView
     private lateinit var btnPlay: Button
+    private lateinit var llAiPlayers: LinearLayout
+    private lateinit var scrollAiPlayers: HorizontalScrollView
 
     // Game state
     private lateinit var deck: Deck
@@ -58,6 +60,8 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        scrollAiPlayers = findViewById(R.id.scroll_ai_players)
+        llAiPlayers      = findViewById(R.id.ll_ai_players)
 
         // 0) Toolbar
         toolbar = findViewById(R.id.toolbar)
@@ -70,6 +74,11 @@ class GameActivity : AppCompatActivity() {
         gvHand        = findViewById(R.id.grid_cards)
         tvPileTop     = findViewById(R.id.tv_pile_top)
         btnPlay       = findViewById(R.id.btn_play)
+
+        scrollAiPlayers.isHorizontalScrollBarEnabled = true
+        scrollAiPlayers.isVerticalScrollBarEnabled   = false
+        scrollAiPlayers.isScrollbarFadingEnabled     = false
+        scrollAiPlayers.overScrollMode               = View.OVER_SCROLL_ALWAYS
 
         // 2) Deal & initialize
         setupGame()
@@ -114,6 +123,7 @@ class GameActivity : AppCompatActivity() {
         }
         R.id.action_settings -> {
             // existing settings logic
+            startActivity(Intent(this, SettingsActivity::class.java))
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -237,10 +247,54 @@ class GameActivity : AppCompatActivity() {
         gvStarterDraw.visibility = View.GONE
         listOf(gvFaceDown, gvFaceUp, gvHand, tvPileTop, btnPlay)
             .forEach { it.visibility = View.VISIBLE }
+        scrollAiPlayers.visibility = View.VISIBLE
+        renderAIPiles()
         renderFacePiles()
         renderPlayerHand()
         updatePileUI()
     }
+
+    private fun renderAIPiles() {
+        llAiPlayers.removeAllViews()
+        Log.d(TAG, "Rendering AI piles for ${players.size-1} CPUs")
+        // Skip index 0 (human), start at 1 for CPU players
+        for (i in 1 until players.size) {
+            val ai = players[i]
+            Log.d(TAG, "Added ${llAiPlayers.childCount} AI pile views")
+            val aiView = layoutInflater.inflate(
+                R.layout.item_ai_piles,
+                llAiPlayers,
+                false
+            )
+
+            // 1) Name label
+            aiView.findViewById<TextView>(R.id.tv_ai_name).text = ai.name
+
+            // 2) Face‑down pile (always back of card)
+            val gvDown = aiView.findViewById<GridView>(R.id.grid_ai_face_down)
+            gvDown.adapter = object : BaseAdapter() {
+                override fun getCount()    = ai.faceDown.size
+                override fun getItem(pos: Int) = ai.faceDown[pos]
+                override fun getItemId(pos: Int) = pos.toLong()
+                override fun getView(pos: Int, cv: View?, parent: ViewGroup): View {
+                    val v = cv ?: layoutInflater.inflate(R.layout.item_card, parent, false)
+                    v.findViewById<ImageView>(R.id.iv_card)
+                        .setImageResource(R.drawable.card_back)
+                    v.findViewById<TextView>(R.id.tv_rank)
+                        .visibility = View.INVISIBLE
+                    return v
+                }
+            }
+
+            // 3) Face‑up pile (show actual cards)
+            val gvUp = aiView.findViewById<GridView>(R.id.grid_ai_face_up)
+            gvUp.adapter = CardAdapter(this, ai.faceUp)
+
+            llAiPlayers.addView(aiView)
+        }
+    Log.d(TAG, "renderAIPiles: added ${llAiPlayers.childCount} AI strips")
+    }
+
 
     private fun renderFacePiles() {
         gvFaceDown.adapter = object : BaseAdapter() {

@@ -15,16 +15,37 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"/>
 
+    <HorizontalScrollView
+        android:id="@+id/scroll_ai_players"
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:fillViewport="true"
+
+        android:scrollbars="horizontal"
+        android:fadeScrollbars="false"
+        android:overScrollMode="always"
+        android:scrollbarSize="8dp"
+    >
+
+        <LinearLayout
+        android:id="@+id/ll_ai_players"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"/>
+    </HorizontalScrollView>
+
     <!-- 1) Starter‑draw row -->
     <GridView
         android:id="@+id/grid_starter_draw"
+        android:layout_below="@id/scroll_ai_players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="auto_fit"
         android:columnWidth="80dp"
         android:horizontalSpacing="8dp"
         android:verticalSpacing="8dp"
-        android:layout_below="@id/toolbar"
         android:layout_marginTop="12dp" />
 
     <!-- 2) Four face‑down -->
