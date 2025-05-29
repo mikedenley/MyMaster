@@ -17,23 +17,21 @@
 
     <HorizontalScrollView
         android:id="@+id/scroll_ai_players"
-        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
         android:visibility="gone"
-        android:fillViewport="true"
-
         android:scrollbars="horizontal"
         android:fadeScrollbars="false"
-        android:overScrollMode="always"
+        android:scrollbarStyle="outsideInset"
         android:scrollbarSize="8dp"
-    >
+        android:overScrollMode="always">
 
         <LinearLayout
-        android:id="@+id/ll_ai_players"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"/>
+            android:id="@+id/ll_ai_players"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"/>
     </HorizontalScrollView>
 
     <!-- 1) Starter‑draw row -->
@@ -70,7 +68,7 @@
         android:horizontalSpacing="8dp"
         android:verticalSpacing="8dp"
         android:layout_below="@id/grid_face_down"
-        android:layout_marginTop="-50dp"
+        android:layout_marginTop="-75dp"
         android:translationY="0dp" />
     <!-- 4) Hand (11 or 12 cards) -->
     <GridView

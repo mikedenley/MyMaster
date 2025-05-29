@@ -65,6 +65,8 @@
     <string name="action_show_scores">Show Scores</string>
     <string name="menu_current_score">Current Score</string>
     <string name="action_help">Help</string>
+
+
     <!-- Game Instructions -->
     <string
         name="pref_instructions_text"

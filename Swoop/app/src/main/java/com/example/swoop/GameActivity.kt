@@ -79,6 +79,8 @@ class GameActivity : AppCompatActivity() {
         scrollAiPlayers.isVerticalScrollBarEnabled   = false
         scrollAiPlayers.isScrollbarFadingEnabled     = false
         scrollAiPlayers.overScrollMode               = View.OVER_SCROLL_ALWAYS
+        scrollAiPlayers.scrollBarStyle               = View.SCROLLBARS_OUTSIDE_INSET
+        scrollAiPlayers.scrollBarSize                = resources.getDimensionPixelSize(R.dimen.ai_scrollbar_size)
 
         // 2) Deal & initialize
         setupGame()
@@ -256,45 +258,53 @@ class GameActivity : AppCompatActivity() {
 
     private fun renderAIPiles() {
         llAiPlayers.removeAllViews()
-        Log.d(TAG, "Rendering AI piles for ${players.size-1} CPUs")
-        // Skip index 0 (human), start at 1 for CPU players
         for (i in 1 until players.size) {
             val ai = players[i]
-            Log.d(TAG, "Added ${llAiPlayers.childCount} AI pile views")
-            val aiView = layoutInflater.inflate(
-                R.layout.item_ai_piles,
-                llAiPlayers,
-                false
-            )
 
-            // 1) Name label
+// 1) inflate the AI strip
+            val aiView = layoutInflater.inflate(R.layout.item_ai_piles, llAiPlayers, false)
             aiView.findViewById<TextView>(R.id.tv_ai_name).text = ai.name
 
-            // 2) Face‑down pile (always back of card)
-            val gvDown = aiView.findViewById<GridView>(R.id.grid_ai_face_down)
-            gvDown.adapter = object : BaseAdapter() {
-                override fun getCount()    = ai.faceDown.size
-                override fun getItem(pos: Int) = ai.faceDown[pos]
-                override fun getItemId(pos: Int) = pos.toLong()
-                override fun getView(pos: Int, cv: View?, parent: ViewGroup): View {
-                    val v = cv ?: layoutInflater.inflate(R.layout.item_card, parent, false)
-                    v.findViewById<ImageView>(R.id.iv_card)
-                        .setImageResource(R.drawable.card_back)
-                    v.findViewById<TextView>(R.id.tv_rank)
-                        .visibility = View.INVISIBLE
-                    return v
-                }
-            }
+// 2) fill its 4 piles
+            val pileContainer = aiView.findViewById<LinearLayout>(R.id.ll_ai_piles)
+            pileContainer.removeAllViews()
 
-            // 3) Face‑up pile (show actual cards)
-            val gvUp = aiView.findViewById<GridView>(R.id.grid_ai_face_up)
-            gvUp.adapter = CardAdapter(this, ai.faceUp)
+            for (slot in 0 until 4) {
+                val pileView = layoutInflater.inflate(
+                    R.layout.item_ai_pile, pileContainer, false
+                )
+                val ivDown = pileView.findViewById<ImageView>(R.id.iv_down)
+                val ivUp   = pileView.findViewById<ImageView>(R.id.iv_up)
+
+                // always show the back
+                ivDown.setImageResource(R.drawable.card_back)
+
+                // if this slot has a face‑up card, show & position it
+                if (slot < ai.faceUp.size) {
+                    val card = ai.faceUp[slot]
+                    ivUp.setImageResource(card.toResourceId(this))
+                    ivUp.visibility = View.VISIBLE
+
+                    // after layout, nudge the face‑up down by half the back‑card height
+                    ivDown.post {
+                        ivUp.translationY = (ivDown.height / 3f)
+                    }
+                }
+
+                pileContainer.addView(pileView)
+            }
 
             llAiPlayers.addView(aiView)
         }
+
+        // Log widths for scrollbar debugging
+        scrollAiPlayers.post {
+            val cW = scrollAiPlayers.width
+            val cntW = llAiPlayers.width
+            Log.d(TAG,"AI strip: container width=$cW, content width=$cntW")
+        }
     Log.d(TAG, "renderAIPiles: added ${llAiPlayers.childCount} AI strips")
     }
-
 
     private fun renderFacePiles() {
         gvFaceDown.adapter = object : BaseAdapter() {
