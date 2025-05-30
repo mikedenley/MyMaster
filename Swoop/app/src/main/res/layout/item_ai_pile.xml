@@ -1,24 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/item_ai_pile.xml -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="80dp"
-    android:layout_height="wrap_content"
-    android:padding="4dp">
+    android:layout_width="wrap_content"
+    android:layout_height="120dp"
+    android:layout_marginEnd="4dp">
 
-    <!-- 1) face‐down card -->
     <ImageView
         android:id="@+id/iv_down"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@null"
-        android:src="@drawable/card_back"/>
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:adjustViewBounds="false"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/desc_card_back" />
 
-    <!-- 2) face‐up card on top, hidden by default -->
     <ImageView
         android:id="@+id/iv_up"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@null"
-        android:visibility="gone"/>
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:adjustViewBounds="false"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:contentDescription="@string/desc_card_face" />
 </FrameLayout>

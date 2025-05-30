@@ -49,6 +49,9 @@
     <!-- Player Labels -->
     <string name="player_you">You</string>
     <string name="player_cpu">AI_Player_</string> <!-- Base label; numbered in adapter -->
+    <string name="desc_player_name">Player name</string>
+    <string name="desc_card_back">Card back</string>
+    <string name="desc_card_face">Card face</string>
 
     <!-- Placeholder Resources -->
     <string name="player_round_score">%1$s: %2$d pts</string>

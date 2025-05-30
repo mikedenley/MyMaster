@@ -1,43 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<!-- res/layout/activity_game.xml -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- 0) TOOLBAR -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <HorizontalScrollView
-        android:id="@+id/scroll_ai_players"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:visibility="gone"
-        android:scrollbars="horizontal"
-        android:fadeScrollbars="false"
-        android:scrollbarStyle="outsideInset"
-        android:scrollbarSize="8dp"
-        android:overScrollMode="always">
-
-        <LinearLayout
-            android:id="@+id/ll_ai_players"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
-    </HorizontalScrollView>
-
-    <!-- 1) Starter‑draw row -->
     <GridView
         android:id="@+id/grid_starter_draw"
-        android:layout_below="@id/scroll_ai_players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="auto_fit"
@@ -46,62 +24,38 @@
         android:verticalSpacing="8dp"
         android:layout_marginTop="12dp" />
 
-    <!-- 2) Four face‑down -->
-    <GridView
-        android:id="@+id/grid_face_down"
+    <ScrollView
+        android:id="@+id/scroll_players"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="4"
-        android:columnWidth="80dp"
-        android:horizontalSpacing="8dp"
-        android:verticalSpacing="8dp"
-        android:layout_below="@id/grid_starter_draw"
-        android:layout_marginTop="16dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:visibility="gone">
 
-    <!-- 3) Four face‑up -->
-    <GridView
-        android:id="@+id/grid_face_up"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="4"
-        android:columnWidth="80dp"
-        android:horizontalSpacing="8dp"
-        android:verticalSpacing="8dp"
-        android:layout_below="@id/grid_face_down"
-        android:layout_marginTop="-75dp"
-        android:translationY="0dp" />
-    <!-- 4) Hand (11 or 12 cards) -->
-    <GridView
-        android:id="@+id/grid_cards"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="4"
-        android:columnWidth="80dp"
-        android:horizontalSpacing="8dp"
-        android:verticalSpacing="8dp"
-        android:layout_below="@id/grid_face_up"
-        android:layout_marginTop="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="128dp">
 
-    <!-- 5) Discard‑pile indicator -->
-    <TextView
-        android:id="@+id/tv_pile_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/grid_cards"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:text="@string/pile_empty"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+            <com.example.swoop.AutoGridView
+                android:id="@+id/grid_hand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:numColumns="auto_fit"
+                android:columnWidth="80dp"
+                android:verticalSpacing="8dp"
+                android:horizontalSpacing="8dp"
+                android:stretchMode="columnWidth"
+                android:visibility="gone"
+                android:layout_marginBottom="24dp" />
 
-    <!-- 6) Play button -->
-    <Button
-        android:id="@+id/btn_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_pile_top"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="@string/play" />
-
-</RelativeLayout>
+            <LinearLayout
+                android:id="@+id/llPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="96dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

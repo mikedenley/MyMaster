@@ -1,16 +1,16 @@
 <!-- res/layout/item_card.xml -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="80dp"
-    android:layout_height="100dp"
+    android:layout_height="120dp"
     android:padding="2dp">
 
     <ImageView
         android:id="@+id/iv_card"
         android:layout_width="match_parent"
-        android:layout_margin="2dp"
         android:layout_height="match_parent"
+        android:layout_margin="2dp"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/card_image_desc"/>
+        android:contentDescription="@string/card_image_desc" />
 
     <TextView
         android:id="@+id/tv_rank"
@@ -21,5 +21,5 @@
         android:layout_marginTop="0dp"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black" />
 </FrameLayout>

@@ -1,4 +1,4 @@
-<!-- res/layout/item_ai_piles.xml -->
+<!-- res/layout/item_player_row.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -7,16 +7,17 @@
     android:layout_marginBottom="20dp">
 
     <TextView
-        android:id="@+id/tv_ai_name"
+        android:id="@+id/tv_player_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textSize="16sp" />
 
     <LinearLayout
-        android:id="@+id/ll_ai_piles"
+        android:id="@+id/ll_face_piles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="4dp"
-        android:minHeight="128dp"/>
+        android:minHeight="128dp"
+        android:layout_marginTop="4dp" />
 </LinearLayout>
