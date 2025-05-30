@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+//import android.util.Log
 import com.example.swoop.ui.adapters.CardAdapter
 import android.view.*
 import android.widget.*
